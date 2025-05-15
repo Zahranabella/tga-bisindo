@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-page">
+    <div id="hero_area login-page">
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+        </nav>
+    </div>
+    <div class="login-container">
+        <h1>Login</h1>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            
+            <label>
+                <input type="checkbox" name="remember" value="1">
+                Remember me
+            </label>
+            <br>
+            <button type="submit">Login</button>
+        </form>
+        
+        <p class="underline-link">
+            Belum punya akun? Silahkan <a href="{{ url_for('register') }}">Register disini</a>
+        </p>
+
+    </div>
+</body>
+</html>

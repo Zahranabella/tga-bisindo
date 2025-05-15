@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-video"></i> Upload Video</h1>
+        <p>Pilih video dari perangkat Anda dan unggah ke platform kami.</p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="video" id="videoInput" accept="video/*" required>
+            <button type="submit"><i class="fas fa-upload"></i> Upload</button>
+        </form>
+        <div id="message"></div>
+
+        <!-- Tombol untuk menuju ke halaman videos -->
+        <a href="videos.html" class="view-videos-button">
+            <i class="fas fa-folder-open"></i> Lihat Video yang Diupload
+        </a>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

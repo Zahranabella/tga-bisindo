@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+
+<body>
+    <section id="hero_area" class="container_center">
+        <nav class="center_row">
+            <ul class="center_row">
+                <li><a href="#hero_area" class="active">Home</a></li>
+                <li><a href="login">Login</a></li>
+            </ul>
+        </nav>
+        <div class="landing_content center_row">
+            <div class="landing_info align_left">
+                <h1>
+                    #DukungInklusiDenganBISINDO<br>
+                    Mari wujudkan komunikasi tanpa batas!
+                </h1>
+                <p>Bahasa Isyarat Indonesia (BISINDO) adalah bahasa alami yang hidup di komunitas Tuli Indonesia. Dengan
+                    teknologi deteksi ini, kita bisa belajar, memahami, dan merangkul keberagaman cara berkomunikasi.
+                    Mulai langkah kecilmu untuk membuka dunia yang lebih inklusif!</p>
+                <button><a href="#detect">COBA DETEKSI SEKARANG</a></button>
+            </div>
+            <div class="landing_image">
+                <img src="../static/img/img.jpg" alt="BISINDO Image">
+            </div>
+        </div>
+    </section>
+
+    <section id="detect" class="container_center">
+        <div class="detection-wrapper">
+            <!-- 🔹 Container Input -->
+            <div class="container input-container">
+                <h1><i class="fas fa-video"></i> Upload Video</h1>
+                <p>Pilih video dari perangkat Anda dan unggah ke platform kami.</p>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" name="video" id="videoInput" accept="video/*" required>
+                    <button type="submit"><i class="fas fa-upload"></i> Upload & Detect</button>
+                </form>
+                <div id="message"></div>
+            </div>
+
+            <!-- 🔹 Container Output (Desain seperti gambar) -->
+            <div class="container output-container" id="videoContainer" style="display: none;">
+                <h1><i class="fas fa-eye"></i> Hasil Deteksi</h1>
+                <video id="uploadedVideo" controls>
+                    <source src="" type="video/mp4">
+                    Browser tidak mendukung video.
+                </video>
+                <div id="labelResult" style="display: none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔽 Tombol Scroll ke Atas -->
+    <button id="scrollTopBtn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="static/js/script.js"></script>
+    <script>
+        // Smooth scroll untuk anchor
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll("a[href^='#']");
+            links.forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: "smooth" });
+                        history.pushState(null, null, " ");
+                    }
+                });
+            });
+        });
+
+        // Tombol scroll ke atas
+        const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+
+        scrollTopBtn.addEventListener("click", function () {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+    </script>
+</body>
+
+</html>

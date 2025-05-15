@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="register-page">
+    <div id="hero_area register-page">
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+        </nav>
+    </div>
+    <div class="register-container">
+        <h1>Register</h1>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('register') }}">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <br>
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="underline-link">
+            Sudah punya akun? <a href="{{ url_for('login') }}">Login disini</a>
+        </p>
+    </div>
+</body>
+</html>

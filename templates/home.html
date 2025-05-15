@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+
+<body class="dashboard-page">
+    <section id="hero_area" class="container_center">
+        <nav class="center_row">
+            <ul class="center_row">
+                <li><a href="#hero_area" class="active">Deteksi</a></li>
+                <li><a href="#">Hasil Deteksi</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            <h1><i class="fas fa-video"></i> Upload Video</h1>
+            <p>Pilih video dari perangkat Anda dan unggah ke platform kami.</p>
+            <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="video" id="videoInput" accept="video/*" required>
+                <button type="submit"><i class="fas fa-upload"></i> Upload & Detect</button>
+            </form>
+            <div id="message"></div>
+
+            <div id="videoContainer" style="display: none;">
+                <div id="labelResult" style="display: none; margin-top: 15px; font-weight: bold;"></div>
+                <video id="uploadedVideo" width="480" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <script src="static/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggles = document.querySelectorAll('.dropdown-toggle');
+
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+
+                    // Tutup semua dropdown lain
+                    toggles.forEach(btn => {
+                        if (btn !== this) {
+                            btn.classList.remove('active');
+                            btn.nextElementSibling.style.display = 'none';
+                        }
+                    });
+
+                    // Toggle dropdown ini
+                    this.classList.toggle('active');
+                    const dropdown = this.nextElementSibling;
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+
+            // Tutup dropdown kalau klik di luar
+            document.addEventListener('click', () => {
+                toggles.forEach(toggle => {
+                    toggle.classList.remove('active');
+                    toggle.nextElementSibling.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

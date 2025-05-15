@@ -1,0 +1,488 @@
+/* Reset default margin and padding */
+html,
+body,
+h1,
+form,
+input,
+button {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+/* Body styling */
+body {
+    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+    min-height: 190vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.container_center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.center_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.align_left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    list-style: none;
+}
+
+#hero_area {
+    width: 100%;
+    height: 100vh;
+}
+
+#hero_area nav {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    z-index: 999;
+}
+
+nav a {
+    color: #fbe4d8;
+    margin: 0 10px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 6px 15px;
+    transition: background 0.3s, color 0.3s;
+}
+
+nav a:hover,
+nav a.active {
+    background: #dfb6b2;
+    color: #522b5b;
+}
+
+.landing_content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px; /* Jarak antara teks dan gambar */
+    width: 80%;
+}
+
+.landing_image img {
+    width: 400px; /* Sesuaikan ukuran */
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.landing_content .landing_info{
+    width: 60%;
+    height: 100%;
+}
+.landing_info h1{
+    color: #fbe4d8;
+}
+.landing_info p{
+    color: #fbe4d8;
+    width:80%;
+    font-size: 18px; /* Sesuaikan ukuran */
+    margin-top: -20px; /* Sesuaikan nilai ini */
+    line-height: 1.6;
+}
+.landing_info button{
+    border: none;
+    background: transparent;
+    outline: none;
+    margin-left: -25px;
+}
+
+.landing_info button:active{
+    transform: translateY(2px);
+}
+.landing_info a{
+    color: peachpuff;
+    background-color: #190019;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.landing_info a:hover {
+    background-color: #854f6c;
+}
+
+#detect{
+    width: 80vw;
+    max-width: 1200px;
+    margin: -1rem auto;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav ul li {
+    position: relative;
+  }
+  
+  .dropdown-toggle {
+    background-color: #dfb6b2;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-weight: bold;
+    color: #522b5b;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .dropdown-toggle.active {
+    background-color: #854f6c;
+    color: #fbe4d8;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0; /* ⬅ sejajarkan ke kanan tombol */
+    background-color: #dfb6b2;
+    min-width: 210px;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    top: 35px; 
+  }
+  
+  .dropdown-content a {
+    color: #190019;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 2px solid #190019;
+    border-radius: 0;
+  }
+  
+  .dropdown-content a:hover {
+    color: #2B124C;
+  }
+
+  .dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+  body.dashboard-page {
+    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+/* Container styling */
+.container {
+    background-color: #522b5b;
+    /* Warna latar container */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.detection-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+
+/* Agar ukuran container sama */
+.input-container,
+.output-container {
+    flex: 1;
+    min-width: 350px;
+    max-width: 450px;
+    background-color: #522b5b;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    color: #fbe4d8;
+    text-align: center;
+}
+
+/* Styling video dan teks label */
+.output-container video {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+#labelResult {
+    background-color: #fbe4d8;
+    color: #2e1437;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+@media (max-width: 900px) {
+    .detection-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Judul halaman */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #fbe4d8;
+    /* Warna teks judul */
+}
+
+.container p{
+    color: #fbe4d8;
+}
+
+/* Form styling */
+#uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input file styling */
+input[type="file"] {
+    padding: 10px;
+    background-color: #fbe4d8;
+    /* Warna latar input */
+    border: 2px solid #190019;
+    /* Warna border input */
+    border-radius: 8px;
+    color: #190019;
+    /* Warna teks input */
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #522b5b;
+    /* Warna tombol pilih file */
+    color: #fbe4d8;
+    /* Warna teks tombol */
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Tombol upload styling */
+button {
+    padding: 12px 20px;
+    background-color: #fbe4d8;
+    /* Warna ltar tombol */
+    color: #190019;
+    /* Warna teks tombol */
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Pesan styling */
+#message {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #fbe4d8;
+    /* Warna teks pesan */
+}
+
+/* #videoContainer {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+} */
+
+body.login-page,
+.register-page {
+    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+nav {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    z-index: 999;
+}
+
+nav a {
+    color: #fbe4d8;
+    margin: 0 10px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 6px 15px;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+}
+
+  .login-container,
+  .register-container {
+    background: #522b5b; /* warna baru */
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    color: #fbe4d8;
+    text-align: center;
+}
+
+.login-container,
+.register-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fbe4d8; 
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: 100%;
+    background-color: #fbe4d8;
+    color: #190019;
+    padding: 10px;
+    margin: 8px 0 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.login-container button[type="submit"] {
+    padding: 12px 50px;
+    background-color: #fbe4d8;
+    color: #190019;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 16px auto 0 auto;
+}
+
+.login-container label {
+    font-size: 14px;
+}
+
+.remember {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.remember input {
+    margin-right: 6px;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+}
+
+#scrollTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #5e2a84;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 12px 16px;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+#scrollTopBtn:hover {
+    background-color: #7e3bbd;
+}
+
+/* Progress bar container */
+#progressBarContainer {
+    width: 100%;
+    background-color: #fbe4d8;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 20px;
+    margin-top: 15px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Inner progress bar */
+#progressBarFill {
+    height: 100%;
+    width: 0%;
+    background-color: #522b5b;
+    transition: width 0.3s ease;
+    border-radius: 8px 0 0 8px;
+}
+
+.underline-link a {
+    text-decoration: underline;
+    color: inherit;
+}
+
+.register-container input[type="text"],
+.register-container input[type="password"],
+.register-container input[type="confirm-password"] {
+    width: 100%;
+    background-color: #fbe4d8;
+    color: #190019;
+    padding: 10px;
+    margin: 8px 0 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.register-container button[type="submit"] {
+    padding: 12px 50px;
+    background-color: #fbe4d8;
+    color: #190019;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 16px auto 0 auto;
+}
