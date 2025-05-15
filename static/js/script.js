@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadingDiv.style.display = "block";
         messageDiv.textContent = "";
 
-        fetch("/", {
+        fetch(window.location.pathname, {
             method: "POST",
             body: formData
         })

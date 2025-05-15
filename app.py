@@ -394,11 +394,36 @@ def register():
     
     return render_template('register.html')
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    if 'username' in session:
-        return render_template('dashboard.html')
-    return redirect(url_for('login'))
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        if 'video' not in request.files:
+            return jsonify({'success': False, 'error': 'No video file found'})
+
+        file = request.files['video']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'Empty filename'})
+
+        filename = secure_filename(file.filename)
+        video_path = os.path.join('uploads', filename)
+        output_filename = f"processed_{filename}"
+        output_path = os.path.join(PROCESSED_FOLDER, output_filename)
+
+        file.save(video_path)
+
+        # 🔹 Proses video & ambil label
+        hasil_deteksi = process_video(video_path, output_path)
+
+        return jsonify({
+            'success': True,
+            'video_url': url_for('static', filename=f"results/{output_filename}"),
+            'hasil': hasil_deteksi
+        })
+
+    return render_template('dashboard.html')
 
 @app.route('/logout')
 def logout():
