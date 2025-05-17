@@ -1,11 +1,20 @@
-/* Reset default margin and padding */
+:root {
+    --primary-bg: #190019;
+    --secondary-bg: #522b5b;
+    --tertiary-bg: #854f6c;
+    --light-bg: #fbe4d8;
+    --accent-color: #dfb6b2;
+    --text-dark: #190019;
+    --text-light: #fbe4d8;
+}
+
 html,
 body,
 h1,
 form,
 input,
 button {
-    margin:0;
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
@@ -13,10 +22,12 @@ button {
 
 /* Body styling */
 body {
-    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+    background: linear-gradient(to bottom, var(--primary-bg), #2B124C, var(--secondary-bg), var(--tertiary-bg), var(--accent-color), var(--light-bg));
     min-height: 190vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-light);
 }
+
 .container_center {
     display: flex;
     flex-direction: column;
@@ -40,6 +51,7 @@ body {
 
 a {
     text-decoration: none;
+    color: var(--text-light);
 }
 
 ul {
@@ -86,41 +98,49 @@ nav a.active {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 40px; /* Jarak antara teks dan gambar */
+    gap: 40px;
+    /* Jarak antara teks dan gambar */
     width: 80%;
 }
 
 .landing_image img {
-    width: 400px; /* Sesuaikan ukuran */
+    width: 400px;
+    /* Sesuaikan ukuran */
     border-radius: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-.landing_content .landing_info{
+.landing_content .landing_info {
     width: 60%;
     height: 100%;
 }
-.landing_info h1{
+
+.landing_info h1 {
     color: #fbe4d8;
 }
-.landing_info p{
+
+.landing_info p {
     color: #fbe4d8;
-    width:80%;
-    font-size: 18px; /* Sesuaikan ukuran */
-    margin-top: -20px; /* Sesuaikan nilai ini */
+    width: 80%;
+    font-size: 18px;
+    /* Sesuaikan ukuran */
+    margin-top: -20px;
+    /* Sesuaikan nilai ini */
     line-height: 1.6;
 }
-.landing_info button{
+
+.landing_info button {
     border: none;
     background: transparent;
     outline: none;
     margin-left: -25px;
 }
 
-.landing_info button:active{
+.landing_info button:active {
     transform: translateY(2px);
 }
-.landing_info a{
+
+.landing_info a {
     color: peachpuff;
     background-color: #190019;
     padding: 10px 20px;
@@ -133,7 +153,7 @@ nav a.active {
     background-color: #854f6c;
 }
 
-#detect{
+#detect {
     width: 80vw;
     max-width: 1200px;
     margin: -1rem auto;
@@ -145,13 +165,13 @@ nav ul {
     gap: 10px;
     padding: 0;
     margin: 0;
-  }
-  
-  nav ul li {
+}
+
+nav ul li {
     position: relative;
-  }
-  
-  .dropdown-toggle {
+}
+
+.dropdown-toggle {
     background-color: #dfb6b2;
     border: none;
     border-radius: 20px;
@@ -160,59 +180,50 @@ nav ul {
     color: #522b5b;
     cursor: pointer;
     font-size: 16px;
-  }
-  
-  .dropdown-toggle.active {
+}
+
+.dropdown-toggle.active {
     background-color: #854f6c;
     color: #fbe4d8;
-  }
-  
-  .dropdown-content {
+}
+
+.dropdown-content {
     display: none;
     position: absolute;
-    right: 0; /* ⬅ sejajarkan ke kanan tombol */
+    right: 0;
+    /* ⬅ sejajarkan ke kanan tombol */
     background-color: #dfb6b2;
     min-width: 210px;
     border-radius: 4px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    top: 35px; 
-  }
-  
-  .dropdown-content a {
+    top: 35px;
+}
+
+.dropdown-content a {
     color: #190019;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
     border-bottom: 2px solid #190019;
     border-radius: 0;
-  }
-  
-  .dropdown-content a:hover {
-    color: #2B124C;
-  }
+}
 
-  .dropdown-content a:last-child {
+.dropdown-content a:hover {
+    color: #2B124C;
+}
+
+.dropdown-content a:last-child {
     border-bottom: none;
 }
 
-  body.dashboard-page {
-    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+body.dashboard-page {
+    background: linear-gradient(to bottom, #190019, #2B124C, #522b5b, #854f6c, #dfb6b2, #fbe4d8);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-/* Container styling */
-.container {
-    background-color: #522b5b;
-    /* Warna latar container */
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    max-width: 500px;
-    width: 100%;
 }
 
+/* Container styling */
 .detection-wrapper {
     display: flex;
     justify-content: center;
@@ -231,7 +242,7 @@ nav ul {
     background-color: #522b5b;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     color: #fbe4d8;
     text-align: center;
 }
@@ -267,7 +278,7 @@ h1 {
     /* Warna teks judul */
 }
 
-.container p{
+.container p {
     color: #fbe4d8;
 }
 
@@ -326,22 +337,16 @@ button {
     /* Warna teks pesan */
 }
 
-/* #videoContainer {
-    margin-top: 20px;
-    width: 100%;
-    text-align: center;
-} */
-
 body.login-page,
 .register-page {
-    background: linear-gradient(to bottom, #190019,#2B124C,#522b5b,#854f6c,#dfb6b2,#fbe4d8);
+    background: linear-gradient(to bottom, #190019, #2B124C, #522b5b, #854f6c, #dfb6b2, #fbe4d8);
     min-height: 100vh;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+}
 
 nav {
     position: fixed;
@@ -361,9 +366,16 @@ nav a {
     transition: background 0.3s, color 0.3s;
 }
 
-  .login-container,
-  .register-container {
-    background: #522b5b; /* warna baru */
+nav a:hover,
+nav a.active {
+    background: #dfb6b2;
+    color: #522b5b;
+}
+
+.login-container,
+.register-container {
+    background: #522b5b;
+    /* warna baru */
     padding: 30px 40px;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -376,7 +388,7 @@ nav a {
 .register-container h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #fbe4d8; 
+    color: #fbe4d8;
 }
 
 .login-container input[type="text"],
@@ -419,13 +431,14 @@ nav a {
     text-align: center;
 }
 
+/* Scroll button */
 #scrollTopBtn {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 1000;
     background-color: #5e2a84;
-    color: white;
+    color: var(--text-light);
     border: none;
     border-radius: 50%;
     padding: 12px 16px;
@@ -438,26 +451,6 @@ nav a {
 
 #scrollTopBtn:hover {
     background-color: #7e3bbd;
-}
-
-/* Progress bar container */
-#progressBarContainer {
-    width: 100%;
-    background-color: #fbe4d8;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 20px;
-    margin-top: 15px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* Inner progress bar */
-#progressBarFill {
-    height: 100%;
-    width: 0%;
-    background-color: #522b5b;
-    transition: width 0.3s ease;
-    border-radius: 8px 0 0 8px;
 }
 
 .underline-link a {
@@ -485,4 +478,83 @@ nav a {
     border-radius: 8px;
     cursor: pointer;
     margin: 16px auto 0 auto;
+}
+
+.history-page nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    z-index: 999;
+}
+
+.history-page h2 {
+    color: #fbe4d8;
+    font-size: 28px;
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+}
+
+.history-page nav a {
+    color: #fbe4d8;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 6px 15px;
+    text-decoration: none;
+    background: #522b5b;
+    transition: background 0.3s, color 0.3s;
+}
+
+.history-page nav a:hover,
+.history-page nav a.active {
+    background: #dfb6b2;
+    color: #522b5b;
+}
+
+/* Tambahkan padding ke body untuk menghindari konten terpotong */
+.history-page {
+    padding-top: 80px;
+}
+
+.history-page button {
+    background-color: #dfb6b2;
+    color: #522b5b;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+table {
+    width: 90%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    background-color: #3f1651;
+    overflow: hidden;
+}
+
+table th,
+table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #fbe4d8;
+}
+
+table th {
+    background-color: #7a2e6e;
+    color: #f5d2c2;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #4a1550;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: #5a1a5e;
 }

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Deteksi</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        video {
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body class="history-page">
+    <nav>
+        <h2>Riwayat Deteksi Anda</h2>
+        <a href="{{ url_for('index') }}" class="back-button">Home</a>
+    </nav>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">No.</th>
+                <th rowspan="2">Video Original</th>
+                <th colspan="2">Hasil Deteksi</th>
+                <th rowspan="2">Aksi</th>
+            </tr>
+            <tr>
+                <th>Video</th>
+                <th>Teks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in history %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <video controls>
+                        <source src="{{ url_for('static', filename=item.original_video.replace('static/', '')) }}"
+                            type="video/mp4">
+                        Browser tidak mendukung video.
+                    </video>
+                </td>
+                <td>
+                    <video controls>
+                        <source src="{{ url_for('static', filename=item.processed_video.replace('static/', '')) }}"
+                            type="video/mp4">
+                        Browser tidak mendukung video.
+                    </video>
+                </td>
+                <td>{{ item.detected_labels }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('hapus_riwayat', id=item.id) }}"
+                        onsubmit="return confirm('Yakin ingin menghapus riwayat ini?');">
+                        <button type="submit">Hapus</button>
+                    </form>
+
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">Belum ada riwayat.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 🔽 Tombol Scroll ke Atas -->
+    <button id="scrollTopBtn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Smooth scroll untuk anchor
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll("a[href^='#']");
+            links.forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("href").substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: "smooth" });
+                        history.pushState(null, null, " ");
+                    }
+                });
+            });
+        });
+
+        // Tombol scroll ke atas
+        const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+
+        scrollTopBtn.addEventListener("click", function () {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+    </script>
+</body>
+
+</html>

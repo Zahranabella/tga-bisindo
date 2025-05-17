@@ -178,15 +178,16 @@ import supervision as sv
 from database import get_user
 import sqlite3
 from datetime import timedelta
+from database import simpan_riwayat
 
 app = Flask(__name__)
 UPLOAD_FOLDER_INDEX = "static/uploads/index"
-UPLOAD_FOLDER_DATASET = "static/uploads/dataset"
+UPLOAD_FOLDER = "static/uploads"
 PROCESSED_FOLDER = "static/results"
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'webm'}
 
 os.makedirs(UPLOAD_FOLDER_INDEX, exist_ok=True)
-os.makedirs(UPLOAD_FOLDER_DATASET, exist_ok=True)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 # Inisialisasi model Roboflow
@@ -408,22 +409,50 @@ def dashboard():
             return jsonify({'success': False, 'error': 'Empty filename'})
 
         filename = secure_filename(file.filename)
-        video_path = os.path.join('uploads', filename)
+        video_path = os.path.join(UPLOAD_FOLDER, filename).replace("\\", "/")
         output_filename = f"processed_{filename}"
-        output_path = os.path.join(PROCESSED_FOLDER, output_filename)
+        output_path = os.path.join(PROCESSED_FOLDER, output_filename).replace("\\", "/")
 
         file.save(video_path)
 
         # 🔹 Proses video & ambil label
         hasil_deteksi = process_video(video_path, output_path)
+        if 'username' in session:
+            simpan_riwayat(session['username'], video_path, output_path, hasil_deteksi)
+
 
         return jsonify({
             'success': True,
-            'video_url': url_for('static', filename=f"results/{output_filename}"),
+            'video_url': url_for('static', filename=output_path.split("static/")[-1]),
             'hasil': hasil_deteksi
         })
 
     return render_template('dashboard.html')
+
+@app.route('/riwayat')
+def riwayat():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    history = conn.execute(
+        "SELECT * FROM history WHERE username = ? ORDER BY created_at DESC",
+        (session['username'],)
+    ).fetchall()
+    conn.close()
+
+    return render_template('riwayat.html', history=history)
+
+@app.route('/hapus_riwayat/<int:id>', methods=['POST'])
+def hapus_riwayat(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    conn.execute("DELETE FROM history WHERE id = ? AND username = ?", (id, session['username']))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('riwayat'))
 
 @app.route('/logout')
 def logout():

@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadingDiv.style.display = "none";
     loadingDiv.style.marginTop = "10px";
     loadingDiv.style.fontWeight = "bold";
+    loadingDiv.style.color = "#FFDAB3";
     uploadForm.appendChild(loadingDiv);
 
     // 🔹 Event listener untuk upload video
@@ -116,6 +117,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Tampilkan label hasil deteksi
                 labelResult.innerHTML = `<strong>Versi Teks:</strong> ${data.hasil}`;
                 labelResult.style.display = "block";
+                // 🔹 Tambahkan tombol simpan
+// const saveButton = document.createElement("button");
+// saveButton.textContent = "Simpan Teks";
+// saveButton.style.marginTop = "10px";
+// saveButton.style.display = "block";
+
+// saveButton.addEventListener("click", function () {
+//     const textToSave = data.hasil;
+//     const blob = new Blob([textToSave], { type: "text/plain" });
+//     const link = document.createElement("a");
+
+//     link.href = URL.createObjectURL(blob);
+//     link.download = "hasil_deteksi.txt";
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// });
+
+// labelResult.appendChild(saveButton);
+
             } else {
                 messageDiv.textContent = "Gagal mengunggah video.";
                 messageDiv.style.color = "#FFDAB3";
