@@ -9,10 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         video {
-            width: 200px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
+    width: 200px;
+    max-width: 108%;
+    height: 120px; /* fix tinggi */
+    object-fit: cover; /* crop bagian berlebih */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
     </style>
 </head>
 
@@ -21,58 +25,79 @@
         <h2>Riwayat Deteksi Anda</h2>
         <a href="{{ url_for('index') }}" class="back-button">Home</a>
     </nav>
-    <table>
-        <thead>
-            <tr>
-                <th rowspan="2">No.</th>
-                <th rowspan="2">Video Original</th>
-                <th colspan="2">Hasil Deteksi</th>
-                <th rowspan="2">Aksi</th>
-            </tr>
-            <tr>
-                <th>Video</th>
-                <th>Teks</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in history %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>
-                    <video controls>
-                        <source src="{{ url_for('static', filename=item.original_video.replace('static/', '')) }}"
-                            type="video/mp4">
-                        Browser tidak mendukung video.
-                    </video>
-                </td>
-                <td>
-                    <video controls>
-                        <source src="{{ url_for('static', filename=item.processed_video.replace('static/', '')) }}"
-                            type="video/mp4">
-                        Browser tidak mendukung video.
-                    </video>
-                </td>
-                <td>{{ item.detected_labels }}</td>
-                <td>
-                    <form method="post" action="{{ url_for('hapus_riwayat', id=item.id) }}"
-                        onsubmit="return confirm('Yakin ingin menghapus riwayat ini?');">
-                        <button type="submit">Hapus</button>
-                    </form>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">No.</th>
+                    <th rowspan="2">Nama File</th>
+                    <th rowspan="2">Video Original</th>
+                    <th colspan="2">Hasil Deteksi</th>
+                    <th rowspan="2" style="text-align: center; width: 10%;">Aksi</th>
+                </tr>
+                <tr>
+                    <th>Video</th>
+                    <th>Teks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.filename }}</td>
+                    <td>
+                        <video controls>
+                            <source src="{{ url_for('static', filename=item.original_video.replace('static/', '')) }}"
+                                type="video/mp4">
+                            Browser tidak mendukung video.
+                        </video>
+                    </td>
+                    <td>
+                        <video controls>
+                            <source src="{{ url_for('static', filename=item.processed_video.replace('static/', '')) }}"
+                                type="video/mp4">
+                            Browser tidak mendukung video.
+                        </video>
+                    </td>
+                    <td>
+                        <div style="overflow-x: auto;">{{ item.detected_labels }}</div>
+                    </td>
+                    <td>
+                        <div class="button-group">
+                            <button onclick="downloadText(`{{ item.labels }}`, '{{ item.filename }}')">Simpan
+                                Teks</button>
+                            <form method="post" action="{{ url_for('hapus_riwayat', id=item.id) }}"
+                                onsubmit="return confirm('Yakin ingin menghapus riwayat ini?');">
+                                <button type="submit">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
 
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5">Belum ada riwayat.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">Belum ada riwayat.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <!-- 🔽 Tombol Scroll ke Atas -->
     <button id="scrollTopBtn" title="Kembali ke atas">
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script>
+        function downloadText(text, filename) {
+            const blob = new Blob([text], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "label_" + filename.replace(/\.[^/.]+$/, "") + ".txt";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
     <script>
         // Smooth scroll untuk anchor
         document.addEventListener("DOMContentLoaded", function () {

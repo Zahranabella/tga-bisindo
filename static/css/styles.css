@@ -521,14 +521,43 @@ nav a.active {
     padding-top: 80px;
 }
 
-.history-page button {
+/* Wrapper untuk tombol */
+.button-group {
+    display: flex;
+    flex-direction: column; /* Tumpuk tombol secara vertikal */
+    gap: 10px;
+    align-items: center;
+    justify-content: center; /* Tengah vertikal */
+    height: 100%;
+}
+
+
+/* Style tombol */
+.button-group button {
     background-color: #dfb6b2;
     color: #522b5b;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 10px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    font-size: 14px;
+}
+
+/* Hover effect untuk tombol */
+.button-group button:hover {
+    background-color: #f2c2b0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 0 10px;
+}
+
+table {
+    min-width: 800px; /* supaya kolom tidak menyempit terlalu kecil */
 }
 
 table {
@@ -537,6 +566,7 @@ table {
     border-collapse: collapse;
     background-color: #3f1651;
     overflow: hidden;
+    table-layout: fixed;
 }
 
 table th,
@@ -544,6 +574,11 @@ table td {
     padding: 15px;
     text-align: center;
     border: 1px solid #fbe4d8;
+}
+
+td video {
+    display: block;
+    margin: 0 auto;
 }
 
 table th {
@@ -557,4 +592,42 @@ table tbody tr:nth-child(even) {
 
 table tbody tr:nth-child(odd) {
     background-color: #5a1a5e;
+}
+
+/* Atur lebar kolom dengan nth-child sesuai urutan kolom */
+table th:nth-child(1),
+table td:nth-child(1) { /* No */
+    width: 5%;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) { /* Nama File */
+    width: 30%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+table th:nth-child(3),
+table td:nth-child(3) { /* Video Original */
+    width: 35%;
+}
+
+table th:nth-child(4),
+table td:nth-child(4) { /* Hasil Deteksi - Video */
+    width: 75%;
+}
+
+table th:nth-child(5),
+table td:nth-child(5) { /* Teks */
+    width: 40%; /* Lebar sedikit lebih besar */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: left; /* Agar teks tidak terlalu mepet tengah */
+}
+
+table th:nth-child(6),
+table td:nth-child(6) { /* Aksi */
+    width: 5%;
 }

@@ -36,11 +36,11 @@ def get_user(username):
     conn.close()
     return user
 
-def simpan_riwayat(username, original_video_path, processed_video_path, detected_labels):
+def simpan_riwayat(username, original_video_path, processed_video_path, detected_labels, filename):
     conn = get_db_connection()
     conn.execute(
-        "INSERT INTO history (username, original_video, processed_video, detected_labels) VALUES (?, ?, ?, ?)",
-        (username, original_video_path, processed_video_path, detected_labels)
+        "INSERT INTO history (username, original_video, processed_video, detected_labels, filename) VALUES (?, ?, ?, ?, ?)",
+        (username, original_video_path, processed_video_path, detected_labels, filename)
     )
     conn.commit()
     conn.close()

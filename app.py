@@ -418,7 +418,7 @@ def dashboard():
         # 🔹 Proses video & ambil label
         hasil_deteksi = process_video(video_path, output_path)
         if 'username' in session:
-            simpan_riwayat(session['username'], video_path, output_path, hasil_deteksi)
+            simpan_riwayat(session['username'], video_path, output_path, hasil_deteksi, filename)
 
 
         return jsonify({
