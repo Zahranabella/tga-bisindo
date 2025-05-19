@@ -9,14 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         video {
-    width: 200px;
-    max-width: 108%;
-    height: 120px; /* fix tinggi */
-    object-fit: cover; /* crop bagian berlebih */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
+            width: 200px;
+            max-width: 108%;
+            height: 120px;
+            /* fix tinggi */
+            object-fit: cover;
+            /* crop bagian berlebih */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -25,6 +26,12 @@
         <h2>Riwayat Deteksi Anda</h2>
         <a href="{{ url_for('index') }}" class="back-button">Home</a>
     </nav>
+    <div
+        style="margin: 30px; text-align: left; display: flex; justify-content: flex-start; align-items: center; margin-bottom: -20px;">
+        <label for="filterInput" style="margin-right: 10px; font-weight: bold; color: #fbe4d8;">Cari Nama File:</label>
+        <input type="text" id="filterInput" placeholder="Masukkan nama file..."
+            style="padding: 5px 10px; border-radius: 5px; border: none;">
+    </div>
     <div class="table-container">
         <table>
             <thead>
@@ -80,13 +87,64 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr id="noMatchRow" style="display: none;">
+                    <td colspan="6" style="text-align: center; color: white;">File tidak ditemukan.</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     <!-- 🔽 Tombol Scroll ke Atas -->
     <button id="scrollTopBtn" title="Kembali ke atas">
         <i class="fas fa-arrow-up"></i>
     </button>
+    <script>
+        // Filter berdasarkan nama file
+        document.getElementById('filterInput').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+            const noMatchRow = document.getElementById('noMatchRow');
+            let visibleCount = 0;
 
+            rows.forEach(row => {
+                const fileNameCell = row.querySelector('td:nth-child(2)');
+                if (!fileNameCell) return;
+
+                const fileName = fileNameCell.textContent.toLowerCase();
+                if (fileName.includes(filter)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Tampilkan atau sembunyikan baris "File tidak ditemukan"
+            if (visibleCount === 0) {
+                noMatchRow.style.display = '';
+            } else {
+                noMatchRow.style.display = 'none';
+            }
+        });
+    </script>
+    <script>
+        let lastScrollTop = 0;
+        const nav = document.querySelector("nav");
+
+        window.addEventListener("scroll", function () {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop) {
+                // Scroll ke bawah → sembunyikan nav
+                nav.classList.add("hidden");
+            } else {
+                // Scroll ke atas → tampilkan nav
+                nav.classList.remove("hidden");
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // untuk iOS Safari
+        });
+    </script>
     <script>
         function downloadText(text, filename) {
             const blob = new Blob([text], { type: "text/plain" });

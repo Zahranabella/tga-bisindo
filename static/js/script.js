@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 videoElement.load(); // Reload video
                 videoContainer.style.display = "block";
 
-                messageDiv.textContent = "Upload berhasil!";
+                messageDiv.textContent = "Upload berhasil! Login untuk menyimpan riwayat deteksi.";
                 messageDiv.style.color = "#FFDAB3";
 
                 // Tampilkan label hasil deteksi

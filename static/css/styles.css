@@ -488,7 +488,10 @@ nav a.active {
     top: 40px;
     left: 40px;
     right: 40px;
-    z-index: 999;
+    transition: top 0.3s;
+}
+.history-page nav.hidden {
+    top: -100px; /* geser ke atas hingga tak terlihat */
 }
 
 .history-page h2 {
@@ -553,7 +556,7 @@ nav a.active {
 .table-container {
     overflow-x: auto;
     max-width: 100%;
-    padding: 0 10px;
+    padding: 0 -10px;
 }
 
 table {
@@ -630,4 +633,15 @@ table td:nth-child(5) { /* Teks */
 table th:nth-child(6),
 table td:nth-child(6) { /* Aksi */
     width: 5%;
+}
+
+#filterInput {
+    font-size: 14px;
+    background-color: #fbe4d8;
+    color: #2B124C;
+}
+
+#filterInput:focus {
+    outline: none;
+    box-shadow: 0 0 5px #aaa;
 }

@@ -457,7 +457,7 @@ def hapus_riwayat(id):
 @app.route('/logout')
 def logout():
     session.clear()  # Menghapus semua data session
-    return redirect(url_for('login'))  # Kembali ke halaman login
+    return redirect(url_for('index'))  # Kembali ke halaman login
 
 if __name__ == "__main__":
     app.run(debug=True)
