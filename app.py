@@ -1,172 +1,3 @@
-# from flask import Flask, render_template, request, jsonify
-# import os
-# import cv2
-# import subprocess
-# import json
-# from werkzeug.utils import secure_filename
-# from ultralytics import YOLO
-
-# app = Flask(__name__)
-# UPLOAD_FOLDER_INDEX = "static/uploads/index"
-# UPLOAD_FOLDER_DATASET = "static/uploads/dataset"
-# PROCESSED_FOLDER = "static/results"
-# ANNOTATION_FILE = 'annotations.json'
-# ALLOWED_EXTENSIONS = {'mp4', 'avi', 'webm'}
-
-# os.makedirs(UPLOAD_FOLDER_INDEX, exist_ok=True)
-# os.makedirs(UPLOAD_FOLDER_DATASET, exist_ok=True)
-# os.makedirs(PROCESSED_FOLDER, exist_ok=True)
-
-# app.config['UPLOAD_FOLDER_DATASET'] = UPLOAD_FOLDER_DATASET
-# model = YOLO("runs/detect/train/weights/best.pt")
-
-# # Cek ekstensi file
-# def allowed_file(filename):
-#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# # Load anotasi jika ada
-# if os.path.exists(ANNOTATION_FILE):
-#     with open(ANNOTATION_FILE, 'r') as f:
-#         annotations = json.load(f)
-# else:
-#     annotations = {}
-
-# @app.route('/upload', methods=['GET', 'POST'])
-# def upload_page():
-#     if request.method == 'GET':
-#         return render_template('upload.html')
-
-#     if 'file' not in request.files or 'label' not in request.form:
-#         return jsonify({'error': 'File dan label harus diisi!'}), 400
-
-#     file = request.files['file']
-#     label = request.form['label']
-
-#     if file.filename == '':
-#         return jsonify({'error': 'Nama file tidak valid!'}), 400
-
-#     if file and allowed_file(file.filename):
-#         filename = secure_filename(file.filename)
-#         filepath = os.path.join(app.config['UPLOAD_FOLDER_DATASET'], filename)
-#         file.save(filepath)
-
-#         # Simpan anotasi
-#         annotations[filename] = label
-#         with open(ANNOTATION_FILE, 'w') as f:
-#             json.dump(annotations, f, indent=4)
-
-#         return jsonify({'message': 'File berhasil diunggah!', 'filename': filename, 'label': label}), 200
-#     else:
-#         return jsonify({'error': 'Jenis file tidak diizinkan!'}), 400
-
-
-# # API untuk mendapatkan daftar dataset
-# @app.route('/dataset', methods=['GET'])
-# def get_dataset():
-#     return jsonify(annotations)
-
-# # Endpoint Train
-# @app.route("/train", methods=["POST"])
-# def train_model():
-#     data = request.get_json()
-#     epochs = int(data.get("epochs", 50))
-#     batch_size = int(data.get("batchSize", 16))
-
-#     try:
-#         model = YOLO("yolov8n.pt")  # Gunakan model YOLOv8
-#         results = model.train(data="data.yaml", epochs=epochs, batch=batch_size)
-
-#         return jsonify({"success": True, "message": "Pelatihan selesai!"})
-#     except Exception as e:
-#         return jsonify({"success": False, "message": f"Error: {str(e)}"})
-
-# @app.route('/train')
-# def train_page():
-#     return render_template('train.html')
-
-# @app.route("/", methods=["GET", "POST"])
-# def index():
-#     if request.method == "POST":
-#         file = request.files["video"]
-#         if file:
-#             file_path = os.path.join(UPLOAD_FOLDER_INDEX, file.filename)
-#             file.save(file_path)
-
-#             output_path = os.path.join(PROCESSED_FOLDER, "processed_" + file.filename)
-#             detected_labels = process_video(file_path, output_path)
-
-#             return jsonify({"video_path": f"/{output_path}", "detected_labels": detected_labels})
-
-#     return render_template("index.html", uploaded=False)
-
-# def process_video(input_path, output_path):
-#     cap = cv2.VideoCapture(input_path)
-#     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-#     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-#     fps = int(cap.get(cv2.CAP_PROP_FPS))
-
-#     # Tentukan kodek berdasarkan ekstensi file output
-#     ext = output_path.split('.')[-1].lower()
-#     fourcc_map = {
-#         'mp4': 'mp4v',  # MP4
-#         'avi': 'XVID',  # AVI
-#         'webm': 'VP80', # WebM
-#         'mov': 'avc1'   # MOV
-#     }
-
-#     fourcc = cv2.VideoWriter_fourcc(*fourcc_map.get(ext, 'mp4v'))
-#     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-
-#     detected_labels = []
-
-#     while cap.isOpened():
-#         ret, frame = cap.read()
-#         if not ret:
-#             break
-
-#         # 🔥 Deteksi bahasa isyarat menggunakan YOLOv8 yang sudah dilatih
-#         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#         results = model(frame_rgb)
-
-#         for result in results:
-#             for box in result.boxes:
-#                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-#                 label = model.names[int(box.cls)]
-#                 conf = float(box.conf)
-
-#                 # Simpan label yang terdeteksi
-#                 detected_labels.append(label)
-
-#                 # Gambar kotak deteksi
-#                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-#                 cv2.putText(frame, f"{label} ({conf:.2f})", (x1, y1 - 10), 
-#                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-#         out.write(frame)
-
-#     cap.release()
-#     out.release()
-
-#     # 🔄 Konversi dengan FFmpeg untuk kompatibilitas
-#     temp_output_path = output_path.replace(f".{ext}", f"_temp.{ext}")
-#     ffmpeg_command = [
-#         "D:\\app\\ffmpeg\\ffmpeg-2025-02-13-git-19a2d26177-full_build\\bin\\ffmpeg.exe", "-y",
-#         "-i", output_path, "-c:v", "libx264", "-preset", "fast",
-#         "-c:a", "aac", "-b:a", "128k", temp_output_path
-#     ]
-    
-#     try:
-#         subprocess.run(ffmpeg_command, check=True)
-#         os.remove(output_path)
-#         os.rename(temp_output_path, output_path)
-#     except subprocess.CalledProcessError as e:
-#         print(f"Terjadi kesalahan dalam konversi: {e}")
-
-#     return detected_labels  # Kembalikan daftar label yang terdeteksi
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
 from flask import Flask, flash, render_template, request, jsonify, redirect, url_for, session
 import os
 import cv2
@@ -191,13 +22,21 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 # Inisialisasi model Roboflow
+# rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
+# project = rf.workspace().project("sign-language-bisindo-qdpec")
+# model = project.version(7).model
+
 rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
-project = rf.workspace().project("sign-language-bisindo-qdpec")
-model = project.version(7).model
+project = rf.workspace().project("tga-bisindo")
+model = project.version(6).model
 
 # rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
 # project = rf.workspace().project("tga-bisindo")
-# model = project.version(6).model
+# model = project.version(8).model
+
+# rf = Roboflow(api_key="Gd6i46fFL6XFNzfPtlRZ")
+# project = rf.workspace().project("bisindo-ng7uc")
+# model = project.version(4).model
 
 # Cek ekstensi file
 def allowed_file(filename):
@@ -269,7 +108,7 @@ def process_video(input_path, output_path):
         if 'predictions' in result and len(result['predictions']) > 0:
             for prediction in result['predictions']:
                 confidence = float(prediction['confidence'])
-                if confidence < 0.7:  # Hanya ambil confidence > 78%
+                if confidence < 0.8:  # Hanya ambil confidence > 78%
                     continue
 
                 x_center = prediction['x']
@@ -283,7 +122,7 @@ def process_video(input_path, output_path):
                 y2 = int(y_center + box_height / 2)
 
                 class_label = prediction['class']
-                label_text = f"{class_label} {confidence:.1f}"
+                label_text = f"{class_label} {confidence:.2f}"
 
                 boxes.append([x1, y1, x2, y2])
                 confidences.append(confidence)
@@ -374,24 +213,30 @@ def register():
         password = request.form['password']
         confirm = request.form['confirm_password']
 
-        if password != confirm:
-            flash("Password tidak cocok.")
-            return render_template('register.html')
+    if len(username) > 20:
+        return "Username terlalu panjang (maks 20 karakter)", 400
 
-        conn = get_db_connection()
-        try:
-            conn.execute(
-                "INSERT INTO users (username, password) VALUES (?, ?)",
-                (username, password)
-            )
-            conn.commit()
-        except sqlite3.IntegrityError:
+    if len(password) > 20:
+        return "Password terlalu panjang (maks 20 karakter)", 400
+
+    if password != confirm:
+        flash("Password tidak cocok.")
+        return render_template('register.html')
+
+    conn = get_db_connection()
+    try:
+        conn.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, password)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError:
             flash("Username sudah digunakan.")
             return render_template('register.html')
-        finally:
+    finally:
             conn.close()
 
-        return redirect(url_for('login'))
+    return redirect(url_for('login'))
     
     return render_template('register.html')
 
@@ -419,7 +264,6 @@ def dashboard():
         hasil_deteksi = process_video(video_path, output_path)
         if 'username' in session:
             simpan_riwayat(session['username'], video_path, output_path, hasil_deteksi, filename)
-
 
         return jsonify({
             'success': True,
