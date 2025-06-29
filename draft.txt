@@ -1,0 +1,82 @@
+proses pakai model lokal
+def process_video(input_path, output_path):
+    cap = cv2.VideoCapture(input_path)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    if fps == 0:
+        print("⚠ FPS tidak terdeteksi, default ke 25.")
+        fps = 25
+
+    # Tentukan ekstensi & codec
+    ext = output_path.split('.')[-1].lower()
+    fourcc_map = {
+        'mp4': 'mp4v',
+        'avi': 'XVID',
+        'webm': 'VP80',
+        'mov': 'avc1'
+    }
+    fourcc = cv2.VideoWriter_fourcc(*fourcc_map.get(ext, 'mp4v'))
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+    detected_labels = []
+    previous_labels = set()
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Konversi ke RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # Deteksi YOLOv8
+        results = model(frame_rgb, verbose=False)
+
+        for result in results:
+            if result.boxes is None:
+                continue
+
+            for box in result.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                class_id = int(box.cls[0])
+                label = model.names[class_id]
+                conf = float(box.conf[0])
+
+                # Gambar bounding box dan label
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame, f"{label} ({conf:.2f})", (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+                # Tambahkan hanya jika label berbeda dari sebelumnya
+                if label not in previous_labels:
+                    detected_labels.append(label)
+                    previous_labels.add(label)
+
+        out.write(frame)
+
+    cap.release()
+    out.release()
+
+    temp_output_path = output_path.replace(f".{ext}", f"_temp.{ext}")
+    ffmpeg_command = [
+        "D:\\app\\ffmpeg\\ffmpeg-2025-02-13-git-19a2d26177-full_build\\bin\\ffmpeg.exe", "-y",
+        "-i", output_path,
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart",
+        temp_output_path.replace("\\", "/")
+    ]
+
+    try:
+        subprocess.run(ffmpeg_command, check=True)
+        os.remove(output_path)
+        os.rename(temp_output_path, output_path)
+    except subprocess.CalledProcessError as e:
+        print(f"❌ FFmpeg error: {e}")
+
+    # Gabungkan label yang terdeteksi sebagai kalimat
+    label_sentence = " ".join(detected_labels)
+    print("Label terdeteksi:", label_sentence)
+    return label_sentence

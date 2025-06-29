@@ -4,6 +4,8 @@ import cv2
 import subprocess
 import numpy as np
 from werkzeug.utils import secure_filename
+from ultralytics import YOLO
+import supervision as sv
 from roboflow import Roboflow
 import supervision as sv
 from database import get_user
@@ -21,14 +23,16 @@ os.makedirs(UPLOAD_FOLDER_INDEX, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
+model = YOLO("runs/detect/train/weights/best.pt")
+
 # Inisialisasi model Roboflow
 # rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
 # project = rf.workspace().project("sign-language-bisindo-qdpec")
 # model = project.version(7).model
 
-rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
-project = rf.workspace().project("tga-bisindo")
-model = project.version(6).model
+# rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
+# project = rf.workspace().project("tga-bisindo")
+# model = project.version(6).model
 
 # rf = Roboflow(api_key="W4rxsn9AtSmc8q1NWf8B")
 # project = rf.workspace().project("tga-bisindo")
@@ -36,7 +40,11 @@ model = project.version(6).model
 
 # rf = Roboflow(api_key="Gd6i46fFL6XFNzfPtlRZ")
 # project = rf.workspace().project("bisindo-ng7uc")
-# model = project.version(4).model
+# model = project.version(5).model
+
+rf = Roboflow(api_key="6tIlt24dM2YYU4zpB9R4")
+project = rf.workspace().project("tga-bisindo-uf0tu")
+model = project.version(1).model
 
 # Cek ekstensi file
 def allowed_file(filename):
@@ -78,6 +86,9 @@ def process_video(input_path, output_path):
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
+    if fps == 0:
+        print("⚠ FPS tidak terdeteksi, gunakan default 25")
+        fps = 25
 
     ext = output_path.split('.')[-1].lower()
     fourcc_map = {
@@ -89,7 +100,13 @@ def process_video(input_path, output_path):
     fourcc = cv2.VideoWriter_fourcc(*fourcc_map.get(ext, 'mp4v'))
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
+    if not out.isOpened():
+        print("❌ Gagal membuka VideoWriter.")
+        return ""
+
     detected_labels = []
+    written_frames = 0
+    frame_count = 0
     label_annotator = sv.LabelAnnotator()
     box_annotator = sv.BoxAnnotator()
 
@@ -98,8 +115,17 @@ def process_video(input_path, output_path):
         if not ret:
             break
 
-        result = model.predict(frame, confidence=40, overlap=30).json()
+        frame_count += 1
 
+        # Resize untuk percepatan, tapi tetap tampilkan fullsize frame
+        small_frame = cv2.resize(frame, (640, 360))
+
+        if frame_count % 2 == 0:  # skip setiap 2 frame
+            out.write(frame)
+            written_frames += 1
+            continue
+
+        result = model.predict(small_frame, confidence=40, overlap=30).json()
         boxes = []
         confidences = []
         class_ids = []
@@ -108,13 +134,17 @@ def process_video(input_path, output_path):
         if 'predictions' in result and len(result['predictions']) > 0:
             for prediction in result['predictions']:
                 confidence = float(prediction['confidence'])
-                if confidence < 0.8:  # Hanya ambil confidence > 78%
+                if confidence < 0.7:
                     continue
 
-                x_center = prediction['x']
-                y_center = prediction['y']
-                box_width = prediction['width']
-                box_height = prediction['height']
+                # Koordinat pada small_frame (640x360), perlu scaling ke ukuran asli
+                scale_x = width / 640
+                scale_y = height / 360
+
+                x_center = prediction['x'] * scale_x
+                y_center = prediction['y'] * scale_y
+                box_width = prediction['width'] * scale_x
+                box_height = prediction['height'] * scale_y
 
                 x1 = int(x_center - box_width / 2)
                 y1 = int(y_center - box_height / 2)
@@ -128,9 +158,7 @@ def process_video(input_path, output_path):
                 confidences.append(confidence)
                 class_ids.append(prediction.get('class_id', 0))
                 labels.append(label_text)
-                detected_labels.append(class_label)
 
-        # Jika ada deteksi valid
         if boxes:
             boxes_array = np.array(boxes, dtype=np.float32)
             confidences_array = np.array(confidences, dtype=np.float32)
@@ -148,34 +176,43 @@ def process_video(input_path, output_path):
                 scene=annotated_frame, detections=detections, labels=labels)
 
             out.write(annotated_frame)
+            written_frames += 1
+
+            for class_label in set([label.split()[0] for label in labels]):
+                detected_labels.append(class_label)
         else:
-            # Jika tidak ada deteksi valid, tulis frame apa adanya
             out.write(frame)
+            written_frames += 1
 
     cap.release()
     out.release()
 
-    # 🔁 Konversi dengan FFmpeg
+    if written_frames == 0 or not os.path.exists(output_path):
+        print("❌ Tidak ada frame yang ditulis.")
+        return ""
+
+    # Konversi FFmpeg
     temp_output_path = output_path.replace(f".{ext}", f"_temp.{ext}")
     ffmpeg_command = [
         "D:\\app\\ffmpeg\\ffmpeg-2025-02-13-git-19a2d26177-full_build\\bin\\ffmpeg.exe", "-y",
-        "-i", output_path, "-c:v", "libx264", "-preset", "fast",
-        "-c:a", "aac", "-b:a", "128k", temp_output_path.replace("\\", "/")
+        "-i", output_path,
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart",
+        temp_output_path.replace("\\", "/")
     ]
-    
+
     try:
         subprocess.run(ffmpeg_command, check=True)
         os.remove(output_path)
         os.rename(temp_output_path, output_path)
     except subprocess.CalledProcessError as e:
-        print(f"Terjadi kesalahan dalam konversi: {e}")
+        print(f"❌ FFmpeg error: {e}")
 
-    # Hanya ambil label unik dengan urutan berdasarkan kemunculan
-    seen = set()
-    unique_labels = [label for label in detected_labels if not (label in seen or seen.add(label))]
-
+    unique_labels = list(dict.fromkeys(detected_labels))
     label_sentence = " ".join(unique_labels)
-    print("Label terdeteksi:", label_sentence)
+    print(label_sentence)
     return label_sentence
 
 app.permanent_session_lifetime = timedelta(days=7)  # Bisa diubah sesuai kebutuhan
