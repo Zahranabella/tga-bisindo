@@ -244,38 +244,74 @@ def login():
     return render_template('login.html', error=error)
 
 @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         confirm = request.form['confirm_password']
+
+#     if len(username) > 20:
+#         return "Username terlalu panjang (maks 20 karakter)", 400
+
+#     if len(password) > 20:
+#         return "Password terlalu panjang (maks 20 karakter)", 400
+
+#     if password != confirm:
+#         flash("Password tidak cocok.")
+#         return render_template('register.html')
+
+#     conn = get_db_connection()
+#     try:
+#         conn.execute(
+#             "INSERT INTO users (username, password) VALUES (?, ?)",
+#             (username, password)
+#         )
+#         conn.commit()
+#     except sqlite3.IntegrityError:
+#             flash("Username sudah digunakan.")
+#             return render_template('register.html')
+#     finally:
+#             conn.close()
+
+#     return redirect(url_for('login'))
+    
+#     return render_template('register.html')
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         confirm = request.form['confirm_password']
 
-    if len(username) > 20:
-        return "Username terlalu panjang (maks 20 karakter)", 400
+        if len(username) > 20:
+            return "Username terlalu panjang (maks 20 karakter)", 400
 
-    if len(password) > 20:
-        return "Password terlalu panjang (maks 20 karakter)", 400
+        if len(password) > 20:
+            return "Password terlalu panjang (maks 20 karakter)", 400
 
-    if password != confirm:
-        flash("Password tidak cocok.")
-        return render_template('register.html')
+        if password != confirm:
+            flash("Password tidak cocok.")
+            return render_template('register.html')
 
-    conn = get_db_connection()
-    try:
-        conn.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)",
-            (username, password)
-        )
-        conn.commit()
-    except sqlite3.IntegrityError:
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO users (username, password) VALUES (?, ?)",
+                (username, password)
+            )
+            conn.commit()
+        except sqlite3.IntegrityError:
             flash("Username sudah digunakan.")
             return render_template('register.html')
-    finally:
+        finally:
             conn.close()
 
-    return redirect(url_for('login'))
+        return redirect(url_for('login'))
     
+    # Jika GET, langsung tampilkan halaman tanpa validasi
     return render_template('register.html')
+
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
